@@ -3,13 +3,15 @@ use super::io::BoxedIo;
 use super::tls::TlsConnector;
 use http::Uri;
 use hyper::client::connect::HttpConnector;
+#[cfg(feature = "unix")]
+use hyper_unix_connector::UnixClient;
 use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 use tower_make::MakeConnection;
 use tower_service::Service;
 
-#[cfg(not(feature = "tls"))]
+#[cfg(all(not(feature = "unix"), not(feature = "tls")))]
 pub(crate) fn connector() -> HttpConnector {
     let mut http = HttpConnector::new();
     http.enforce_http(false);
@@ -17,7 +19,12 @@ pub(crate) fn connector() -> HttpConnector {
     http
 }
 
-#[cfg(feature = "tls")]
+#[cfg(all(feature = "unix", not(feature = "tls")))]
+pub(crate) fn connector() -> UnixClient {
+    UnixClient
+}
+
+#[cfg(all(feature = "tls", not(feature = "unix")))]
 pub(crate) fn connector(tls: Option<TlsConnector>) -> Connector {
     Connector::new(tls)
 }

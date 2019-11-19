@@ -34,6 +34,9 @@ transport = [
 ]
 tls = ["tokio-rustls"]
 tls-roots = ["rustls-native-certs"]
+unix = [
+    "hyper-unix-connector", "transport"
+]
 
 [[bench]]
 name = "bench_main"
@@ -68,6 +71,9 @@ tower = { version = "=0.3.0-alpha.2", optional = true}
 tower-make = "=0.3.0-alpha.2a"
 tower-balance =  { version = "=0.3.0-alpha.2", optional = true }
 tower-load = { version = "=0.3.0-alpha.2", optional = true }
+
+# unix
+hyper-unix-connector = { version = "0.1.1", optional = true }
 
 # rustls
 tokio-rustls = { version = "=0.12.0-alpha.5", optional = true }
